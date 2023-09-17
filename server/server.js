@@ -2,7 +2,11 @@ require("dotenv").config();
 const morgan = require("morgan");
 const express = require("express");
 const app = express();
-const db = require("./db")
+const db = require("./db");
+const cors = require("cors");
+
+// middleware for fetching data from different domain like google.com
+app.use(cors());
 
 // middleware
 app.use(express.json());
@@ -18,7 +22,6 @@ app.get("/api/v1/restaurants", async (req, res) => {
 
 try {
     const results = await db.query('SELECT * FROM restaurants');
-    console.log(results);
       res.status(200).json({
         status: "Get All Restaurants success",
         results:results.rowCount,
