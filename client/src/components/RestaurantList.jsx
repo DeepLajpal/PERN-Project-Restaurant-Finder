@@ -26,7 +26,6 @@ const RestaurantList = () => {
 
       // Update the state to remove the deleted restaurant
       setRestaurants(() => {
-        console.log("inside delete btn");
         return restaurants.filter((restaurant) => restaurant.id !== id);
       });
 
@@ -61,11 +60,11 @@ const RestaurantList = () => {
         </thead>
         <tbody>
 
-          {restaurants && restaurants.map((restaurant, index) => {
+          {restaurants && restaurants.map((restaurant) => {
             return (
               <tr
                 onClick={(e) => handleOnRowClick(e, restaurant?.id)}
-                key={index}
+                key={restaurant?.id}
               >
                 <td className="align-middle">{restaurant?.name}</td>
                 <td className="align-middle">{restaurant?.location}</td>
