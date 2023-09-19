@@ -9,7 +9,7 @@ import { useRestaurantsContext } from "../context/RestaurantContext";
 const AddReviews = () => {
   const [name, setName] = useState("");
   const [review, setReview] = useState("");
-  const [rating, setRating] = useState("Ratings");
+  const [rating, setRating] = useState(5);
   const location = useLocation();
   const { id } = useParams();
   const Navigate = useNavigate();

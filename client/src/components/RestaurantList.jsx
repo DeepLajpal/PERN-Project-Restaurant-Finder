@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import RestaurantFinder from "../apis/RestaurantFinder";
 import { useRestaurantsContext } from "../context/RestaurantContext";
 import { useNavigate } from "react-router-dom";
+import StartRating from "./StartRating";
 
 const RestaurantList = () => {
-  const { restaurants, setRestaurants } = useRestaurantsContext();
+  const { restaurants, setRestaurants, RenderStarRatingComponent } = useRestaurantsContext();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,6 +46,8 @@ const RestaurantList = () => {
     navigate(`/restaurants/${id}/update`);
   };
 
+
+
   return (
     <div className="table-responsive">
       <table className="table table-hover table-dark">
@@ -59,38 +62,40 @@ const RestaurantList = () => {
           </tr>
         </thead>
         <tbody>
-
-          {restaurants && restaurants.map((restaurant) => {
-            return (
-              <tr
-                onClick={(e) => handleOnRowClick(e, restaurant?.id)}
-                key={restaurant?.id}
-              >
-                <td className="align-middle">{restaurant?.name}</td>
-                <td className="align-middle">{restaurant?.location}</td>
-                <td className="align-middle">
-                  {"$".repeat(restaurant?.price_range)}
-                </td>
-                <td className="align-middle">reviews</td>
-                <td className="align-middle">
-                  <button
-                    onClick={(e) => handleUpdateBtn(e, restaurant?.id)}
-                    className="btn btn-warning"
-                  >
-                    Update
-                  </button>
-                </td>
-                <td className="align-middle">
-                  <button
-                    onClick={(e) => handleDeleteBtn(e, restaurant?.id)}
-                    className="btn btn-danger"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
+          {restaurants &&
+            restaurants.map((restaurant) => {
+              return (
+                <tr
+                  onClick={(e) => handleOnRowClick(e, restaurant?.id)}
+                  key={restaurant?.id}
+                >
+                  <td className="align-middle">{restaurant?.name}</td>
+                  <td className="align-middle">{restaurant?.location}</td>
+                  <td className="align-middle">
+                    {"$".repeat(restaurant?.price_range)}
+                  </td>
+                  <td className="text-warning align-middle">
+                    {RenderStarRatingComponent(restaurant)}
+                  </td>
+                  <td className="align-middle">
+                    <button
+                      onClick={(e) => handleUpdateBtn(e, restaurant?.id)}
+                      className="btn btn-warning"
+                    >
+                      Update
+                    </button>
+                  </td>
+                  <td className="align-middle">
+                    <button
+                      onClick={(e) => handleDeleteBtn(e, restaurant?.id)}
+                      className="btn btn-danger"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </div>

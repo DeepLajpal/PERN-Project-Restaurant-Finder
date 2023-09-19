@@ -1,4 +1,6 @@
 import { useState, createContext, useContext } from "react";
+import StartRating from "../components/StartRating";
+
 const RestaurantsContext = createContext();
 
 const RestaurantsContextProvider = (props) => {
@@ -8,6 +10,18 @@ const RestaurantsContextProvider = (props) => {
 
   const addRestaurant = (restaurant) => {
     setRestaurants([...restaurants, restaurant]);
+  };
+
+  const RenderStarRatingComponent = (restaurant) => {
+    if (!restaurant?.total_rating) {
+      return <span className="ml-1">0 reviews</span>;
+    }
+    return (
+      <>
+        <StartRating rating={restaurant?.avg_rating} />
+        <span className="ml-1">({restaurant?.total_rating})</span>
+      </>
+    );
   };
 
   return (
@@ -20,6 +34,7 @@ const RestaurantsContextProvider = (props) => {
         setSelectedRestaurant,
         currentReviews,
         setCurrentReviews,
+        RenderStarRatingComponent,
       }}
     >
       {props.children}

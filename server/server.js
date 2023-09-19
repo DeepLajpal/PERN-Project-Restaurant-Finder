@@ -20,7 +20,10 @@ app.use(express.json());
 // Get All Restaurants
 app.get("/api/v1/restaurants", async (req, res) => {
   try {
-    const results = await db.query("SELECT * FROM restaurants");
+    const results = await db.query(
+      "select * from restaurants left join (SELECT restaurant_id, TRUNC(AVG(rating),1) as avg_rating, COUNT(*) as total_rating from reviews group by restaurant_id) reviews on restaurants.id = reviews.restaurant_id"
+    );
+ console.log(results);
     res.status(200).json({
       status: "Get All Restaurants success",
       results: results.rowCount,
@@ -37,14 +40,14 @@ app.get("/api/v1/restaurants", async (req, res) => {
 app.get("/api/v1/Restaurants/:id", async (req, res) => {
   try {
     const restaurant = await db.query(
-      "SELECT * FROM restaurants WHERE id = $1",
+      "select * from restaurants left join (SELECT restaurant_id, TRUNC(AVG(rating),1) as avg_rating, COUNT(*) as total_rating from reviews group by restaurant_id) reviews on restaurants.id = reviews.restaurant_id WHERE id = $1",
       [req.params.id]
     );
     const reviews = await db.query(
       "SELECT * FROM REVIEWS WHERE restaurant_id=$1",
       [req.params.id]
     );
-    console.log(reviews);
+    console.log("restaurant", restaurant);
     res.status(200).json({
       status: "Get One Resataurant success",
       data: {
@@ -121,15 +124,14 @@ app.post("/api/v1/restaurants/:id/addReview", async (req, res) => {
     console.log(results);
     res.status(201).json({
       status: "Add Review Success",
-      data:{
-        review:results.rows[0]
-      }
+      data: {
+        review: results.rows[0],
+      },
     });
   } catch (error) {
     console.log(error);
   }
 });
-
 
 //Delete a review
 app.delete("/api/v1/restaurants/:id/deleteReview", async (req, res) => {
@@ -141,16 +143,14 @@ app.delete("/api/v1/restaurants/:id/deleteReview", async (req, res) => {
     console.log(results);
     res.status(204).json({
       status: "Delete Review Success",
-      data:{
-        review:results.rows[0]
-      }
+      data: {
+        review: results.rows[0],
+      },
     });
   } catch (error) {
     console.log(error);
   }
 });
-
-
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {

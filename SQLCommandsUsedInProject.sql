@@ -63,3 +63,16 @@ WHERE department = 'HR';
 -- postgres aggregate function such as min, max, avg function etc 
 SELECT trunc(AVG(rating), 2) as avg_rating from reviews WHERE restaurant_id=268; ,-- trunc is used to reduce the decimal digits
 SELECT COUNT(rating) as total_rating from reviews WHERE restaurant_id= 260;
+select restaurant_id, count(rating) from reviews group by restaurant_id;  
+
+-- joins in sql 
+-- it is used to join two tables 
+-- types of joins such left inner join, right inner join etc 
+
+select * from restaurants left join (SELECT restaurant_id, TRUNC(AVG(rating),1) as avg_rating, COUNT(*) as total_rating from reviews group by restaurant_id) reviews on restaurants.id = reviews.restaurant_id
+-- Explaning of this sql query 
+--firstly we getting all restaurants table tables and join the three column from reviews table restaurant_id, avg_rating, and count , count is a total ratings each restaurant have, avg_rating is the average rating of restaurants;
+
+
+-- to get one restaurant by just adding WHERE id = 1 at the end 
+select * from restaurants left join (SELECT restaurant_id, TRUNC(AVG(rating),1) as avg_rating, COUNT(*) as total_rating from reviews group by restaurant_id) reviews on restaurants.id = reviews.restaurant_id WHERE id = $1
