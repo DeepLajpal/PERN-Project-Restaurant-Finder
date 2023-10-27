@@ -3,6 +3,7 @@ import Home from "./routes/Home";
 import RestaurantDetailPage from "./routes/RestaurantDetailPage";
 import UpdatePage from "./routes/UpdatePage";
 import { RestaurantsContextProvider } from "./context/RestaurantContext";
+import SignupAndLogin from "./components/SignupAndLogin";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/restaurants/:id" element={<RestaurantDetailPage />} />
             <Route path="/restaurants/:id/update" element={<UpdatePage />} />
+            <Route path="/SignupLogin" element={<SignupAndLogin />} />
           </Routes>
         </Router>
       </div>

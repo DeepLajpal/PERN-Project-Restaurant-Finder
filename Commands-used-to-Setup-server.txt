@@ -1,0 +1,18 @@
+sudo apt update && sudo apt upgrade -y = to update an upgrade ubuntu
+sudo apt install postgresql postgresql-contrib -y = installing postgresql for database and postgresql-contrib for extra functionality such as data encryption
+sudo -i -u postgres = to switch to default linux user created by postgres on installation
+psql = to connect to the database as a current user name
+\l = to list all databases 
+\q = to logout from postgres and take back to linux user
+\du = to list all database user
+sudo passwd = to change current user passwd
+su postgres = to switch user
+sudo passwd [linux username] = to change passwd for another user of linux
+psql --help = to list all psql commands
+psql -d postgres = to connect to the database postgres as a current user name
+\conninfo = give info about database you are connected, as which user, socket and port
+ALTER user ubuntu PASSWORD 'ubuntu'; = to change the postgres user PASSWORD
+scp -i Downloads\Restaurant-Finder-PERN-STACK.pem restaurantFinder.pgsql ubuntu@3.110.47.193:/home/ubuntu = used to copy files to aws server
+cd ~ to go to home directory of ubuntu
+nginx -t = to check NGINX configuration is correct or not
+pm2 start /home/ubuntu/apps/zomatu-app/server/server.js --name yelp-app
