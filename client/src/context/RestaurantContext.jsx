@@ -9,7 +9,7 @@ const RestaurantsContextProvider = (props) => {
   const [currentReviews, setCurrentReviews] = useState({});
 
   const addRestaurant = (restaurant) => {
-    setRestaurants([...restaurants, restaurant]);
+    setRestaurants((prevRestaurants) => [...prevRestaurants, restaurant]);
   };
 
   const RenderStarRatingComponent = (restaurant) => {

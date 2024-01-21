@@ -1,3 +1,7 @@
+/**
+ * Database connection pool using pg library.
+ * @module db/index
+ */
 const {Pool} =require("pg");
  
 const pool = new Pool()

@@ -39,6 +39,15 @@ app.get("/api/v1/restaurants", async (req, res) => {
 // Get One Resataurant
 app.get("/api/v1/Restaurants/:id", async (req, res) => {
   try {
+    /**
+     * Represents a restaurant with its details and average rating.
+     * @typedef {Object} Restaurant
+     * @property {number} id - The ID of the restaurant.
+     * @property {string} name - The name of the restaurant.
+     * @property {string} location - The location of the restaurant.
+     * @property {number} avg_rating - The average rating of the restaurant.
+     * @property {number} total_rating - The total number of ratings for the restaurant.
+     */
     const restaurant = await db.query(
       "select * from restaurants left join (SELECT restaurant_id, TRUNC(AVG(rating),1) as avg_rating, COUNT(*) as total_rating from reviews group by restaurant_id) reviews on restaurants.id = reviews.restaurant_id WHERE id = $1",
       [req.params.id]
