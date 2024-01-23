@@ -91,7 +91,7 @@ const AddReviews = () => {
           <div className="row">
             <div className="mb-3 col-sm-8">
               <label htmlFor="name" className="col-form-label">
-                Name
+                Name<span className="text-danger">*</span>
               </label>
               <input
                 value={name}
@@ -105,7 +105,7 @@ const AddReviews = () => {
 
             <div className="mb-3 col-sm-4">
               <label htmlFor="rating" className="col-form-label">
-                Select Rating
+                Select Rating<span className="text-danger">*</span>
               </label>
               <select
                 value={rating}
@@ -125,7 +125,7 @@ const AddReviews = () => {
 
           <div className="mb-3">
             <label className="mb-2" htmlFor="Review">
-              Review
+              Review<span className="text-danger">*</span>
             </label>
             <textarea
               value={review}
