@@ -6,8 +6,12 @@ import StartRating from "./StartRating";
 import Popups from "./Popups";
 
 const RestaurantList = () => {
-  const { restaurants, setRestaurants, RenderStarRatingComponent } =
-    useRestaurantsContext();
+  const {
+    restaurants,
+    setRestaurants,
+    RenderStarRatingComponent,
+    currentReviews,
+  } = useRestaurantsContext();
   const [popups, setPopups] = useState([]);
   const navigate = useNavigate();
 
@@ -23,22 +27,33 @@ const RestaurantList = () => {
     fetch();
   }, []);
 
-  const handleDeleteBtn = async (e, id) => {
+  const handleDeleteBtn = async (e, id, restaurant) => {
     e.stopPropagation();
-    try {
-      await RestaurantFinder.delete(`./${id}`);
+    if (
+      restaurant?.total_rating === 0 ||
+      restaurant?.total_rating === undefined ||
+      restaurant?.total_rating === null
+    ) {
+      try {
+        await RestaurantFinder.delete(`./${id}`);
 
-      // Update the state to remove the deleted restaurant
-      setRestaurants(() => {
-        return restaurants.filter((restaurant) => restaurant.id !== id);
-      });
-      setPopups((prevPopups) => [...prevPopups, "Delete Sccess!"]);
+        // Update the state to remove the deleted restaurant
+        setRestaurants((prevRestaurants) => {
+          return prevRestaurants.filter((restaurant) => restaurant.id !== id);
+        });
+        setPopups((prevPopups) => [...prevPopups, "Delete Sccess!"]);
+        setTimeout(() => {
+          setPopups((prevPopups) => prevPopups.slice(1));
+        }, 1500);
+        console.log("Delete Success");
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setPopups((prevPopups) => [...prevPopups, "Reviews Exist!"]);
       setTimeout(() => {
         setPopups((prevPopups) => prevPopups.slice(1));
       }, 1500);
-      console.log("Delete Success");
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -54,20 +69,41 @@ const RestaurantList = () => {
 
   return (
     <>
-      {popups.map((popup, index) => (
-        <Popups
-          key={index}
-          className={"alert alert-danger"}
-          alertMessage={popup}
-          style={{
-            position: "absolute",
-            marginTop: "10%",
-            top: `${index * 70}px`,
-            left: "50%",
-            transform: "translateX(-50%)",
-          }}
-        />
-      ))}
+      {popups.map((popup, index) => {
+        if (popup === "Delete Sccess!") {
+          return (
+            <Popups
+              key={index}
+              className={"alert alert-success"}
+              alertMessage={popup}
+              style={{
+                position: "absolute",
+                marginTop: "10%",
+                top: `${index * 70}px`,
+                left: "50%",
+                transform: "translateX(-50%)",
+                zIndex: 999,
+              }}
+            />
+          );
+        } else {
+          return (
+            <Popups
+              key={index}
+              className={"alert alert-warning"}
+              alertMessage={popup}
+              style={{
+                position: "absolute",
+                marginTop: "10%",
+                top: `${index * 70}px`,
+                left: "50%",
+                transform: "translateX(-50%)",
+                zIndex: 999,
+              }}
+            />
+          );
+        }
+      })}
 
       <div className="table-responsive">
         <table className="table table-hover table-dark">
@@ -97,7 +133,9 @@ const RestaurantList = () => {
                     </td>
                     <td className="align-middle">
                       <button
-                        onClick={(e) => handleUpdateBtn(e, restaurant?.id)}
+                        onClick={(e) =>
+                          handleUpdateBtn(e, restaurant?.id, restaurant)
+                        }
                         className="btn btn-warning"
                       >
                         Update
@@ -105,7 +143,9 @@ const RestaurantList = () => {
                     </td>
                     <td className="align-middle">
                       <button
-                        onClick={(e) => handleDeleteBtn(e, restaurant?.id)}
+                        onClick={(e) =>
+                          handleDeleteBtn(e, restaurant?.id, restaurant)
+                        }
                         className="btn btn-danger"
                       >
                         Delete

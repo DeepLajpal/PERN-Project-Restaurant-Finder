@@ -32,8 +32,8 @@ const Reviews = ({ allReviews }) => {
     <>
       {popups.map((popup, index) => (
         <Popups
-          alertMessage="Delete Success!"
-          className={"alert alert-danger"}
+          alertMessage={popup}
+          className={"alert alert-success"}
           key={index}
           style={{
             position: "absolute",
