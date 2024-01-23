@@ -5,7 +5,7 @@ const UpdatePage = () => {
   return (
     <>
       <div className="container mx-auto p-2"  style={{ transform: "translateY(20%)", width: "50vw" }}>
-        <h1 className="text-center" style={{ marginBottom : "3rem"}}>Update Restaurant</h1>
+        <h1 className="text-center" style={{ marginBottom : "3rem" }}>Update Restaurant</h1>
         <UpdateRestaurant />
       </div>
     </>
