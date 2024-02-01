@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useRestaurantsContext } from "../context/RestaurantContext";
 import RestaurantFinder from "../apis/RestaurantFinder";
-import StartRating from "../components/StartRating";
 import Reviews from "../components/Reviews";
 import AddReviews from "../components/AddReviews";
 
@@ -12,7 +11,7 @@ const RestaurantDetailPage = () => {
     setSelectedRestaurant,
     RenderStarRatingComponent,
   } = useRestaurantsContext();
-  const { currentReviews, setCurrentReviews } = useRestaurantsContext();
+  const { currentReviews } = useRestaurantsContext();
 
   const params = useParams();
   useEffect(() => {
@@ -21,7 +20,7 @@ const RestaurantDetailPage = () => {
         const response = await RestaurantFinder.get(`/${params.id}`);
         if (response) {
           setSelectedRestaurant(() => response.data.data);
-          console.log("selectedRestaurant: ", selectedRestaurant )
+          console.log("selectedRestaurant: ", selectedRestaurant);
         }
       } catch (error) {
         console.log(error);
@@ -33,7 +32,10 @@ const RestaurantDetailPage = () => {
     <div>
       {selectedRestaurant && (
         <>
-          <h1 className="text-center display-1" style={{fontFamily:"Roboto"}}>
+          <h1
+            className="text-center display-1"
+            style={{ fontFamily: "Roboto" }}
+          >
             {selectedRestaurant.restaurant?.name}
           </h1>
           <div className="text-center text-warning fs-4">

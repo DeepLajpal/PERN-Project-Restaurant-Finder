@@ -36,11 +36,13 @@ const Reviews = ({ allReviews }) => {
           className={"alert alert-success"}
           key={index}
           style={{
-            position: "absolute",
-            marginTop: "10%",
-            top: `${index * 70}px`,
-            left: "50%",
-            transform: "translateX(-50%)",
+            position: "fixed",
+                marginTop: "10%",
+                marginBottom: "5%",
+                bottom: `${index * 70}px`,
+                left: "12%",
+                transform: "translateX(-40%)",
+                zIndex: "99",
           }}
         />
       ))}

@@ -1,19 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import RestaurantFinder from "../apis/RestaurantFinder";
 import { useRestaurantsContext } from "../context/RestaurantContext";
 import { useNavigate } from "react-router-dom";
-import StartRating from "./StartRating";
-import Popups from "./Popups";
+import CustomModal from "./modal";
+import UpdateRestaurant from "../components/UpdateRestaurant";
 
 const RestaurantList = () => {
   const {
     restaurants,
     setRestaurants,
     RenderStarRatingComponent,
-    currentReviews,
+    handleDeleteBtn,
+    handleUpdate,
+    modalDisplay,
+    searchRestaurants,
+    inputValue,
   } = useRestaurantsContext();
-  const [popups, setPopups] = useState([]);
+
   const navigate = useNavigate();
+
+  const checkResult = () =>
+    inputValue !== "" && searchRestaurants?.length === 0;
 
   useEffect(() => {
     const fetch = async () => {
@@ -25,88 +32,17 @@ const RestaurantList = () => {
       }
     };
     fetch();
-  }, []);
-
-  const handleDeleteBtn = async (e, id, restaurant) => {
-    e.stopPropagation();
-    if (
-      restaurant?.total_rating === 0 ||
-      restaurant?.total_rating === undefined ||
-      restaurant?.total_rating === null
-    ) {
-      try {
-        await RestaurantFinder.delete(`./${id}`);
-
-        // Update the state to remove the deleted restaurant
-        setRestaurants((prevRestaurants) => {
-          return prevRestaurants.filter((restaurant) => restaurant.id !== id);
-        });
-        setPopups((prevPopups) => [...prevPopups, "Delete Sccess!"]);
-        setTimeout(() => {
-          setPopups((prevPopups) => prevPopups.slice(1));
-        }, 1500);
-        console.log("Delete Success");
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      setPopups((prevPopups) => [...prevPopups, "Reviews Exist!"]);
-      setTimeout(() => {
-        setPopups((prevPopups) => prevPopups.slice(1));
-      }, 1500);
-    }
-  };
+  }, [modalDisplay]);
 
   const handleOnRowClick = (e, id) => {
     e.stopPropagation();
     navigate(`/restaurants/${id}`);
   };
 
-  const handleUpdateBtn = (e, id) => {
-    e.stopPropagation();
-    navigate(`/restaurants/${id}/update`);
-  };
-
   return (
-    <>
-      {popups.map((popup, index) => {
-        if (popup === "Delete Sccess!") {
-          return (
-            <Popups
-              key={index}
-              className={"alert alert-success"}
-              alertMessage={popup}
-              style={{
-                position: "absolute",
-                marginTop: "10%",
-                top: `${index * 70}px`,
-                left: "50%",
-                transform: "translateX(-50%)",
-                zIndex: 999,
-              }}
-            />
-          );
-        } else {
-          return (
-            <Popups
-              key={index}
-              className={"alert alert-warning"}
-              alertMessage={popup}
-              style={{
-                position: "absolute",
-                marginTop: "10%",
-                top: `${index * 70}px`,
-                left: "50%",
-                transform: "translateX(-50%)",
-                zIndex: 999,
-              }}
-            />
-          );
-        }
-      })}
-
+    <div>
       <div className="table-responsive">
-        <table className="table table-hover table-dark">
+        <table className="table table-dark">
           <thead>
             <tr className="table-primary">
               <th scope="col">Restaurant</th>
@@ -117,9 +53,24 @@ const RestaurantList = () => {
               <th scope="col">Delete</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="position-relative">
+            {checkResult() && (
+              <tr>
+                <td className="border border-0 bg-white">
+                  <div className="position-absolute start-50 translate-middle-x text-dark">
+                    No Result Found
+                  </div>
+                </td>
+              </tr>
+            )}
+
+            {console.log("RestaurantsCheckResult: ", !checkResult())}
             {restaurants &&
-              restaurants.map((restaurant) => {
+              !checkResult() &&
+              (searchRestaurants?.length > 0
+                ? searchRestaurants
+                : restaurants
+              ).map((restaurant) => {
                 return (
                   <tr
                     onClick={(e) => handleOnRowClick(e, restaurant?.id)}
@@ -131,25 +82,33 @@ const RestaurantList = () => {
                     <td className="text-warning align-middle">
                       {RenderStarRatingComponent(restaurant)}
                     </td>
-                    <td className="align-middle">
-                      <button
-                        onClick={(e) =>
-                          handleUpdateBtn(e, restaurant?.id, restaurant)
-                        }
-                        className="btn btn-warning"
-                      >
-                        Update
-                      </button>
+                    <td
+                      className="align-middle"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <CustomModal
+                        value={<UpdateRestaurant restaurant={restaurant} />}
+                        modalCloseBtnName="Save"
+                        modalCloseBtnFunction={handleUpdate}
+                        functionParam={{ restaurant }}
+                        modalOpenBtnName="Update"
+                        title="Update Restaurant"
+                        modalOpenBtnColor="warning"
+                      />
                     </td>
-                    <td className="align-middle">
-                      <button
-                        onClick={(e) =>
-                          handleDeleteBtn(e, restaurant?.id, restaurant)
-                        }
-                        className="btn btn-danger"
-                      >
-                        Delete
-                      </button>
+                    <td
+                      className="align-middle"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <CustomModal
+                        value="Are you Sure, you want to delete?"
+                        modalCloseBtnName="Yes"
+                        modalCloseBtnFunction={handleDeleteBtn}
+                        functionParam={{ restaurant }}
+                        modalOpenBtnName="Delete"
+                        title="Confirm deletion"
+                        modalOpenBtnColor="danger"
+                      />
                     </td>
                   </tr>
                 );
@@ -157,8 +116,9 @@ const RestaurantList = () => {
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 };
+
 
 export default RestaurantList;

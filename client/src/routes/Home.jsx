@@ -1,16 +1,18 @@
-import React from 'react'
-import Header from '../components/Header'
-import AddRestaurant from '../components/AddRestaurant'
-import RestaurantList from '../components/RestaurantList'
+import React from "react";
+import Header from "../components/Header";
+import RestaurantList from "../components/RestaurantList";
+import NavBar from "../components/NavBar";
+import RenderPopup from "../components/RenderPopup";
 
 const Home = () => {
   return (
     <div>
-      <Header/>
-      <AddRestaurant/>
-      <RestaurantList/>
+      <RenderPopup/>
+      <Header />
+      <NavBar/>
+      <RestaurantList />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

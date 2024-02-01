@@ -1,20 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import RestaurantFinder from "../apis/RestaurantFinder";
-import { useNavigate, useParams } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
 import { useRestaurantsContext } from "../context/RestaurantContext";
 import Popups from "./Popups";
+
 
 const AddReviews = () => {
   const [name, setName] = useState("");
   const [review, setReview] = useState("");
   const [rating, setRating] = useState(5);
-  const location = useLocation();
   const { id } = useParams();
-  const Navigate = useNavigate();
-  const { currentReviews, setCurrentReviews } = useRestaurantsContext();
+  const { setCurrentReviews } = useRestaurantsContext();
   const [popups, setPopups] = useState([]);
-
   const handleOnSubmit = async (e) => {
     e.preventDefault();
 
@@ -58,11 +56,12 @@ const AddReviews = () => {
               className={"alert alert-warning"}
               key={index}
               style={{
-                position: "absolute",
+                position: "fixed",
                 marginTop: "10%",
-                top: `${index * 70}px`,
-                left: "50%",
-                transform: "translateX(-50%)",
+                marginBottom: "5%",
+                bottom: `${index * 70}px`,
+                left: "12%",
+                transform: "translateX(-40%)",
                 zIndex: "99",
               }}
             />
@@ -74,11 +73,12 @@ const AddReviews = () => {
               className={"alert alert-success"}
               key={index}
               style={{
-                position: "absolute",
+                position: "fixed",
                 marginTop: "10%",
-                top: `${index * 70}px`,
-                left: "50%",
-                transform: "translateX(-50%)",
+                marginBottom: "5%",
+                bottom: `${index * 70}px`,
+                left: "12%",
+                transform: "translateX(-40%)",
                 zIndex: "99",
               }}
             />
