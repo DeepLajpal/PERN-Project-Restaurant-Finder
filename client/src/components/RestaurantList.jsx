@@ -42,7 +42,13 @@ const RestaurantList = () => {
   return (
     <div>
       <div className="table-responsive">
-        <table className="table table-dark">
+        {checkResult() && (
+          <div className="position-absolute start-50 top-50 translate-middle text-dark">
+            No Result Found
+          </div>
+        )}
+
+        <table className="table table-hover table-dark">
           <thead>
             <tr className="table-primary">
               <th scope="col">Restaurant</th>
@@ -54,7 +60,7 @@ const RestaurantList = () => {
             </tr>
           </thead>
           <tbody className="position-relative">
-            {checkResult() && (
+            {/* {checkResult() && (
               <tr>
                 <td className="border border-0 bg-white">
                   <div className="position-absolute start-50 translate-middle-x text-dark">
@@ -62,9 +68,8 @@ const RestaurantList = () => {
                   </div>
                 </td>
               </tr>
-            )}
+            )} */}
 
-            {console.log("RestaurantsCheckResult: ", !checkResult())}
             {restaurants &&
               !checkResult() &&
               (searchRestaurants?.length > 0
@@ -119,6 +124,5 @@ const RestaurantList = () => {
     </div>
   );
 };
-
 
 export default RestaurantList;
