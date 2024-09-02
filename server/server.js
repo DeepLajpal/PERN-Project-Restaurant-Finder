@@ -11,7 +11,10 @@ app.use(cors());
 // middleware
 app.use(express.json());
 
-// Adding this route to avoid 404 error,
+// Root Route , Adding this route to avoid 404 error,
+app.get("/", (req, res) => {
+  res.send("Hello, World!");
+});
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
