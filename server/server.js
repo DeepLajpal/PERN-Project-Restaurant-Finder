@@ -11,6 +11,12 @@ app.use(cors());
 // middleware
 app.use(express.json());
 
+// Adding this route to avoid 404 error,
+app.get("/", (req, res) => {
+  res.send("Hello, World!");
+});
+
+
 // Get All Restaurants
 app.get("/api/v1/restaurants", async (req, res) => {
   try {
