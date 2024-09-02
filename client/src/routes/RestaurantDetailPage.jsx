@@ -20,6 +20,7 @@ const RestaurantDetailPage = () => {
         const response = await RestaurantFinder.get(`/${params.id}`);
         if (response) {
           setSelectedRestaurant(() => response.data.data);
+          console.log("selectedRestaurant: ", selectedRestaurant);
         }
       } catch (error) {
         console.log(error);
