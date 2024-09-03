@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useRestaurantsContext } from "../context/RestaurantContext";
 import { LuUtensilsCrossed } from "react-icons/lu";
+import PropTypes from "prop-types";
 
 const CustomModal = ({
   value,
@@ -19,45 +20,27 @@ const CustomModal = ({
     e.stopPropagation();
     setShow(true);
   };
+
   const handleClose = (e) => {
-    // e.stopPropagation();
+    e.stopPropagation();
     setShow(false);
   };
 
-  const handleClickWithThreeArgs = async (e, id, restaurant) => {
+  const handleModalClose = async (e, id, restaurant) => {
     e.stopPropagation();
-    if (modalCloseBtnFunction) {
-      // Call modalCloseBtnFunction and wait for it to complete
-      await modalCloseBtnFunction(e, id, restaurant);
 
-      // Update the modalDisplay state using a callback function
+    if (modalCloseBtnFunction) {
+      if (restaurant) {
+        await modalCloseBtnFunction(e, id, restaurant);
+      } else {
+        await modalCloseBtnFunction(e);
+      }
+
       setModalDisplay((prevModalDisplay) => {
-        // Close the modal if modalDisplay is false
-        if (prevModalDisplay === false) {
+        if (!prevModalDisplay) {
           setShow(false);
         }
-
-        return prevModalDisplay; // Return the previous state value
-      });
-    } else {
-      console.log("No Change");
-    }
-  };
-
-  const handleClickWithOneArgs = async (e) => {
-    e.stopPropagation();
-    if (modalCloseBtnFunction) {
-      // Call modalCloseBtnFunction and wait for it to complete
-      await modalCloseBtnFunction(e);
-
-      // Update the modalDisplay state using a callback function
-      setModalDisplay((prevModalDisplay) => {
-        // Close the modal if modalDisplay is false
-        if (prevModalDisplay === false) {
-          setShow(false);
-        }
-
-        return prevModalDisplay; // Return the previous state value
+        return prevModalDisplay;
       });
     } else {
       console.log("No Change");
@@ -66,11 +49,11 @@ const CustomModal = ({
 
   return (
     <>
-      <Button variant={modalOpenBtnColor} onClick={(e) => handleShow(e)}>
+      <Button variant={modalOpenBtnColor} onClick={handleShow}>
         {modalOpenBtnName}
       </Button>
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} backdrop="static">
         <Modal.Header>
           <Modal.Title onClick={(e) => e.stopPropagation()}>
             {title}
@@ -84,13 +67,11 @@ const CustomModal = ({
           <Button
             variant="primary"
             onClick={(e) =>
-              typeof functionParam?.restaurant === "object"
-                ? handleClickWithThreeArgs(
-                    e,
-                    functionParam?.restaurant?.id,
-                    functionParam?.restaurant
-                  )
-                : handleClickWithOneArgs(e)
+              handleModalClose(
+                e,
+                functionParam?.restaurant?.id,
+                functionParam?.restaurant
+              )
             }
           >
             {modalCloseBtnName}
@@ -99,6 +80,18 @@ const CustomModal = ({
       </Modal>
     </>
   );
+};
+
+CustomModal.propTypes = {
+  value: PropTypes.node.isRequired,
+  modalOpenBtnName: PropTypes.string.isRequired,
+  modalCloseBtnName: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  modalOpenBtnColor: PropTypes.string,
+  modalCloseBtnFunction: PropTypes.func,
+  functionParam: PropTypes.shape({
+    restaurant: PropTypes.object,
+  }),
 };
 
 export default CustomModal;

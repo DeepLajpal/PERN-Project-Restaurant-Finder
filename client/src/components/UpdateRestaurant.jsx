@@ -17,7 +17,7 @@ const UpdateRestaurant = ({ restaurant }) => {
     const fetchData = async () => {
       try {
         const response2 = await RestaurantFinder.get("/");
-        setRestaurants(response2.data.data.restaurant[0]);
+        setRestaurants(response2.data.data.restaurant);
         setUpdatedName(restaurant?.name);
         setUpdatedLocation(restaurant?.location);
         setUpdatedPriceRange(restaurant?.price_range);
