@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import RestaurantFinder from "../apis/RestaurantFinder";
 import { useRestaurantsContext } from "../context/RestaurantContext";
 import { useNavigate } from "react-router-dom";
 import CustomModal from "./modal";
 import UpdateRestaurant from "../components/UpdateRestaurant";
+import Loader from "./Loader";
 
 const RestaurantList = () => {
   const {
@@ -16,6 +17,7 @@ const RestaurantList = () => {
     searchRestaurants,
     inputValue,
   } = useRestaurantsContext();
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -24,11 +26,15 @@ const RestaurantList = () => {
 
   useEffect(() => {
     const fetch = async () => {
+      setLoading(true)
       try {
         const response = await RestaurantFinder.get("/");
-        setRestaurants(response.data.data.restaurant[0]);
+        console.log("API Response:", response.data); // For debugging
+        setRestaurants(response.data.data.restaurant); // Set to array
+        setLoading(false)
       } catch (error) {
         console.log(error);
+        // Optionally, set an error state here
       }
     };
     fetch();
@@ -64,9 +70,8 @@ const RestaurantList = () => {
               </tr>
             )}
 
-            {console.log("RestaurantsCheckResult: ", !checkResult())}
-            {restaurants &&
-              !checkResult() &&
+            { console.log("RestaurantsCheckResult: ", !checkResult())}
+            { loading? <Loader/>: Array.isArray(restaurants) && !checkResult() &&
               (searchRestaurants?.length > 0
                 ? searchRestaurants
                 : restaurants
@@ -119,6 +124,5 @@ const RestaurantList = () => {
     </div>
   );
 };
-
 
 export default RestaurantList;

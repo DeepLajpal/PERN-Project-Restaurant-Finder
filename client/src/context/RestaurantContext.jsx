@@ -3,32 +3,36 @@ import StartRating from "../components/StartRating";
 import RestaurantFinder from "../apis/RestaurantFinder";
 // import { useNavigate } from "react-router-dom";
 
+// Create a Context for Restaurants
 const RestaurantsContext = createContext();
 
 const RestaurantsContextProvider = (props) => {
+  // State for managing restaurant data
   const [restaurants, setRestaurants] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState({});
   const [currentReviews, setCurrentReviews] = useState({});
   const [popups, setPopups] = useState([]);
   const [modalCloseBtnFunction, setModalCloseBtnFunction] = useState();
+  
+  // State for managing form inputs for adding/updating restaurants
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [priceRange, setPriceRange] = useState("Price Range");
   const [updatedName, setUpdatedName] = useState("");
   const [updatedLocation, setUpdatedLocation] = useState("");
   const [updatedPriceRange, setUpdatedPriceRange] = useState("Price Range");
+  
+  // State for modal visibility and search results
   const [modalDisplay, setModalDisplay] = useState(true);
   const [searchRestaurants, setSearchRestaurants] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  
-  
 
-  // const navigate = useNavigate();
-
+  // Handles form submission for adding a new restaurant
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     try {
       if (name && location && priceRange !== "Price Range") {
+        // Check if the restaurant already exists
         const exists = restaurants?.some(
           (restaurant) =>
             restaurant.name === name &&
@@ -37,6 +41,7 @@ const RestaurantsContextProvider = (props) => {
         );
 
         if (exists) {
+          // Show popup if restaurant already exists
           setModalDisplay(() => true);
           setPopups((prevPopups) => [
             ...prevPopups,
@@ -46,7 +51,7 @@ const RestaurantsContextProvider = (props) => {
             setPopups((prevPopups) => prevPopups.slice(1));
           }, 1500);
         } else {
-          // All details are valid, and the restaurant doesn't exist
+          // Add new restaurant
           const response = await RestaurantFinder.post("/", {
             name,
             location,
@@ -55,7 +60,6 @@ const RestaurantsContextProvider = (props) => {
 
           addRestaurant(response.data.data.restaurant);
           setModalDisplay(() => false);
-
           setPopups((prevPopups) => [
             ...prevPopups,
             "Restaurant Adding Success!",
@@ -64,13 +68,14 @@ const RestaurantsContextProvider = (props) => {
             setPopups((prevPopups) => prevPopups.slice(1));
           }, 1500);
 
+          // Reset form inputs
           setName("");
           setLocation("");
           setPriceRange("Price Range");
         }
       } else {
+        // Show popup if any form details are missing
         setModalDisplay(true);
-
         setPopups((prevPopups) => [
           ...prevPopups,
           "All Details are Mandatory!",
@@ -84,10 +89,12 @@ const RestaurantsContextProvider = (props) => {
     }
   };
 
+  // Adds a new restaurant to the list
   const addRestaurant = (restaurant) => {
     setRestaurants((prevRestaurants) => [...prevRestaurants, restaurant]);
   };
 
+  // Renders star rating component based on restaurant rating
   const RenderStarRatingComponent = (restaurant) => {
     if (!restaurant?.total_rating) {
       return <span className="ml-1">0 reviews</span>;
@@ -100,6 +107,7 @@ const RestaurantsContextProvider = (props) => {
     );
   };
 
+  // Handles deletion of a restaurant
   const handleDeleteBtn = async (e, id, restaurant) => {
     e.stopPropagation();
     if (
@@ -119,7 +127,7 @@ const RestaurantsContextProvider = (props) => {
             (currentRestaurant) => currentRestaurant?.id !== restaurant?.id
           )
         );
-        setPopups((prevPopups) => [...prevPopups, "Delete Sccess!"]);
+        setPopups((prevPopups) => [...prevPopups, "Delete Success!"]);
         setTimeout(() => {
           setPopups((prevPopups) => prevPopups.slice(1));
         }, 1500);
@@ -128,6 +136,7 @@ const RestaurantsContextProvider = (props) => {
         console.log(error);
       }
     } else {
+      // Show popup if restaurant has reviews
       setModalDisplay(() => true);
       setPopups((prevPopups) => [...prevPopups, "Reviews Exist!"]);
       setTimeout(() => {
@@ -136,9 +145,9 @@ const RestaurantsContextProvider = (props) => {
     }
   };
 
+  // Handles updating a restaurant
   const handleUpdate = async (e, id, restaurant) => {
     e.preventDefault();
-
     try {
       if (
         updatedName &&
@@ -152,6 +161,7 @@ const RestaurantsContextProvider = (props) => {
             restaurant?.price_range === updatedPriceRange
         );
         if (exists) {
+          // Show popup if restaurant already exists
           setModalDisplay(() => true);
           setPopups((prevPopups) => [
             ...prevPopups,
@@ -162,15 +172,17 @@ const RestaurantsContextProvider = (props) => {
           }, 1500);
         } else {
           try {
-            const response = await RestaurantFinder.put(`./${restaurant.id}`, {
+            // Update restaurant details
+            const response = await RestaurantFinder.put(`/${restaurant.id}`, {
               name: updatedName,
               location: updatedLocation,
               price_range: updatedPriceRange,
             });
 
+            // Refresh restaurants list
             try {
               const response = await RestaurantFinder.get("/");
-              setRestaurants(response.data.data.restaurant[0]);
+              setRestaurants(response.data.data.restaurant);
             } catch (error) {
               console.log(error);
             }
@@ -192,11 +204,12 @@ const RestaurantsContextProvider = (props) => {
             });
 
             setModalDisplay(() => false);
-            setPopups((prevPopups) => [...prevPopups, "Update Succesfully"]);
+            setPopups((prevPopups) => [...prevPopups, "Update Successfully"]);
             setTimeout(() => {
               setPopups((prevPopups) => prevPopups.slice(1));
             }, 1500);
 
+            // Reset update form inputs
             setUpdatedName("");
             setUpdatedLocation("");
             setUpdatedPriceRange("Price Range");
@@ -205,6 +218,7 @@ const RestaurantsContextProvider = (props) => {
           }
         }
       } else {
+        // Show popup if any form details are missing
         setModalDisplay(true);
         setPopups((prevPopups) => [
           ...prevPopups,
@@ -262,6 +276,7 @@ const RestaurantsContextProvider = (props) => {
   );
 };
 
+// Custom hook to use the RestaurantsContext
 const useRestaurantsContext = () => {
   return useContext(RestaurantsContext);
 };
