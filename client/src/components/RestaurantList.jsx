@@ -59,7 +59,7 @@ const RestaurantList = () => {
               <th scope="col">Delete</th>
             </tr>
           </thead>
-          <tbody className="position-relative">
+          { loading? <Loader/>: <tbody className="position-relative">
             {checkResult() && (
               <tr>
                 <td className="border border-0 bg-white">
@@ -71,7 +71,7 @@ const RestaurantList = () => {
             )}
 
             { console.log("RestaurantsCheckResult: ", !checkResult())}
-            { loading? <Loader/>: Array.isArray(restaurants) && !checkResult() &&
+            {  Array.isArray(restaurants) && !checkResult() &&
               (searchRestaurants?.length > 0
                 ? searchRestaurants
                 : restaurants
@@ -118,7 +118,7 @@ const RestaurantList = () => {
                   </tr>
                 );
               })}
-          </tbody>
+          </tbody>}
         </table>
       </div>
     </div>
