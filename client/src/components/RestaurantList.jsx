@@ -31,7 +31,7 @@ const RestaurantList = () => {
         const response = await RestaurantFinder.get("/");
         console.log("API Response:", response.data); // For debugging
         setRestaurants(response.data.data.restaurant); // Set to array
-        // setLoading(false)
+        setLoading(false)
       } catch (error) {
         console.log(error);
         // Optionally, set an error state here
